@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator API Key Premium</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Gaya CSS tetap sama, saya tidak mengubahnya kecuali jika diperlukan untuk elemen baru */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #2c3e50, #4a69bd);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .card-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+        }
+
+        .input-with-icon input:focus {
+            border-color: #4a69bd;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.2);
+            outline: none;
+        }
+
+        .toggle-visibility {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .toggle-visibility:hover {
+            color: #4a69bd;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .checkbox-group input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .checkbox-group a {
+            color: #4a69bd;
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn, .admin-login-btn {
+            background: linear-gradient(135deg, #4a69bd, #2c3e50);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px; /* Tambahan margin untuk tombol login admin */
+        }
+
+        .submit-btn:hover, .admin-login-btn:hover {
+            background: linear-gradient(135deg, #3a59ad, #1c2e40);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:active, .admin-login-btn:active {
+            transform: translateY(0);
+        }
+
+        .api-key-result {
+            background: linear-gradient(135deg, #f0f7ff, #e1f0ff);
+            border: 2px dashed #4a69bd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            display: none;
+        }
+
+        .api-key-result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .api-key-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .api-key-header h3 {
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .copy-btn {
+            background: #4a69bd;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #3a59ad;
+        }
+
+        .api-key-value {
+            font-family: 'Courier New', monospace;
+            background: #2c3e50;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            word-break: break-all;
+            font-size: 0.95rem;
+            position: relative;
+            padding-right: 50px;
+        }
+
+        .api-info {
+            background-color: #f0f7ff;
+            border-left: 4px solid #4a69bd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+
+        .api-info h3 {
+            margin-bottom: 8px;
+            font-size: 1rem;
+            color: #4a69bd;
+        }
+
+        .api-info ul {
+            padding-left: 20px;
+        }
+
+        .api-info li {
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 576px) {
+            .card-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1><i class="fas fa-key"></i> Generator API Key</h1>
+                <p>Buat API Key baru untuk mengakses layanan kami</p>
+            </div>
+            <div class="card-body">
+                <form id="apiKeyForm">
+                    <div class="form-group">
+                        <label for="firstName">Nama Depan</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="firstName" placeholder="Nama Depan Anda" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Nama Belakang</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user-tag"></i>
+                            <input type="text" id="lastName" placeholder="Nama Belakang Anda" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" placeholder="Alamat Email Anda" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apiName">Nama API Key</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-tag"></i>
+                            <input type="text" id="apiName" placeholder="Berikan nama untuk API Key ini" required>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">Saya setuju dengan <a href="#">Ketentuan Layanan</a> dan <a href="#">Kebijakan Privasi</a></label>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-key"></i> Buat API Key Baru
+                    </button>
+                </form>
+
+                <button class="admin-login-btn" onclick="window.location.href='/admin/login'">
+                    <i class="fas fa-lock"></i> Login Admin
+                </button>
+
+                <div class="api-key-result" id="apiKeyResult">
+                    <div class="api-key-header">
+                        <h3><i class="fas fa-check-circle"></i> API Key Berhasil Dibuat</h3>
+                        <button class="copy-btn" id="copyApiKey">
+                            <i class="fas fa-copy"></i> Salin
+                        </button>
+                    </div>
+                    <div class="api-key-value" id="apiKeyValue">
+                        </div>
+                    <div class="api-info">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Simpan API Key dengan Aman</h3>
+                        <p>API Key ini tidak akan ditampilkan lagi. Pastikan Anda menyimpannya di tempat yang aman.</p>
+                    </div>
+                </div>
+
+                <div class="api-info">
+                    <h3><i class="fas fa-info-circle"></i> Informasi API Key</h3>
+                    <ul>
+                        <li>API Key memberikan akses ke semua endpoint API kami</li>
+                        <li>Simpan API Key dengan aman dan jangan bagikan kepada siapapun</li>
+                        <li>Anda dapat membuat API Key baru kapan saja di halaman pengaturan</li>
+                        <li>Setiap API Key memiliki hak akses yang dapat dikustomisasi</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2023 Perusahaan Teknologi. <a href="#">Bantuan</a> | <a href="#">Kebijakan Privasi</a></p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiKeyForm = document.getElementById('apiKeyForm');
+            const firstNameInput = document.getElementById('firstName');
+            const lastNameInput = document.getElementById('lastName');
+            const emailInput = document.getElementById('email');
+            const apiNameInput = document.getElementById('apiName');
+            const apiKeyResult = document.getElementById('apiKeyResult');
+            const apiKeyValue = document.getElementById('apiKeyValue');
+            const copyApiKeyBtn = document.getElementById('copyApiKey');
+
+            // Kirim data ke backend saat form disubmit
+            apiKeyForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const firstName = firstNameInput.value.trim();
+                const lastName = lastNameInput.value.trim();
+                const email = emailInput.value.trim();
+                const apiName = apiNameInput.value.trim();
+
+                if (!firstName || !lastName || !email || !apiName) {
+                    return alert('Semua kolom harus diisi!');
+                }
+
+                const submitBtn = this.querySelector('.submit-btn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Membuat API Key...';
+                submitBtn.disabled = true;
+
+                try {
+                    // Kirim ke server (/generate-api-key)
+                    const response = await fetch('/generate-api-key', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ firstName, lastName, email, apiName })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        apiKeyValue.textContent = result.apiKey;
+                        apiKeyResult.classList.add('show');
+                        // Reset form kecuali hasil API Key
+                        apiKeyForm.reset();
+                        apiKeyResult.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert('Gagal membuat API Key: ' + result.message);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Terjadi kesalahan saat membuat API Key.');
+                }
+
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+
+            // Tombol salin
+            copyApiKeyBtn.addEventListener('click', function() {
+                const apiKey = apiKeyValue.textContent;
+                navigator.clipboard.writeText(apiKey).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+                    this.style.background = '#2ecc71';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.background = '#4a69bd';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Gagal menyalin:', err);
+                    alert('Gagal menyalin API Key. Silakan salin manual.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
